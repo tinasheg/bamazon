@@ -36,13 +36,13 @@ function promptUserPurchase() {
 			validate: validateInput,
 			filter: Number
 		}
-	]).then(function(input) {
+	]).then(function (input) {
 
 		let item = input.item_id;
 		let quantity = input.quantity;
 		let queryStr = 'SELECT * FROM products WHERE ?';
 
-		connection.query(queryStr, {item_id: item}, function(err, data) {
+		connection.query(queryStr, { item_id: item }, function (err, data) {
 			if (err) throw err;
 			if (data.length === 0) {
 				console.log('ERROR: Invalid Item ID. Please select a valid Item ID.');
@@ -55,7 +55,7 @@ function promptUserPurchase() {
 
 					let updateQueryStr = 'UPDATE products SET stock_quantity = ' + (productData.stock_quantity - quantity) + ' WHERE item_id = ' + item;
 
-					connection.query(updateQueryStr, function(err, data) {
+					connection.query(updateQueryStr, function (err, data) {
 						if (err) throw err;
 
 						console.log('Your oder has been placed! Your total is $' + productData.price * quantity);
@@ -65,11 +65,12 @@ function promptUserPurchase() {
 						connection.end();
 					})
 				} else {
+					displayInventory();
+
 					console.log('Sorry, insufficent product in stock, your order can not be completed.');
 					console.log('Please modify your order.');
 					console.log("\n---------------------------------------------------------------------\n");
 
-					displayInventory();
 				}
 			}
 		})
@@ -80,7 +81,7 @@ function displayInventory() {
 
 	queryStr = 'SELECT * FROM products';
 
-	connection.query(queryStr, function(err, data) {
+	connection.query(queryStr, function (err, data) {
 		if (err) throw err;
 
 		console.log('Existing Inventory: ');
@@ -97,9 +98,9 @@ function displayInventory() {
 			console.log(strOut);
 		}
 
-	  	console.log("---------------------------------------------------------------------\n");
+		console.log("---------------------------------------------------------------------\n");
 
-	  	promptUserPurchase();
+		promptUserPurchase();
 	})
 }
 
